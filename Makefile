@@ -1,5 +1,5 @@
 # --- Configuration ---
-NASM     = "c:\program files\nasm\nasm.exe"
+NASM     = "C:\Users\jpach\AppData\Local\bin\NASM\nasm.exe"
 # Path for lld-link.exe
 LINK     = lib/lld-link.exe
 
@@ -18,11 +18,12 @@ all: main.exe
 main.exe: $(OBJ_DIR)\main.obj
 	".\$(LINK)" $(OBJ_DIR)\main.obj $(LIBS) $(LINK_FLAGS) /OUT:"$(OBJ_DIR)\main.exe"
 
-$(OBJ_DIR)\main.obj: $(SRC_DIR)\main.asm | $(OBJ_DIR)
+$(OBJ_DIR)\main.obj: $(SRC_DIR)\main.asm | $(OBJ_DIR) 
 	$(NASM) $(NASM_FLAGS) $(SRC_DIR)\main.asm -o $(OBJ_DIR)\main.obj
 
 $(OBJ_DIR):
 	mkdir $(OBJ_DIR)
+	copy lib\msvcr100.dll $(OBJ_DIR)\msvcr100.dll
 
 clean:
 	del /q $(OBJ_DIR)\*.* main.exe
