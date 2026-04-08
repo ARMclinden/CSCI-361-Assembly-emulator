@@ -1,5 +1,5 @@
 # --- Configuration ---
-NASM     = "C:\Users\jpach\AppData\Local\bin\NASM\nasm.exe"
+NASM     = "C:\Users\amclinden\AppData\Local\bin\NASM\nasm.exe"
 # Path for lld-link.exe
 LINK     = lib/lld-link.exe
 
