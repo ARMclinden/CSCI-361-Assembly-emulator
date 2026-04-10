@@ -16,9 +16,20 @@ section .data
 section .text
 _main:
 
+    mov edx, S
+    push edx
+
     call _input
 
+    push eax
+    mov eax, x
+    push eax
+
     call heron
+
+    fst [S]
+    mov edx, S
+    push eax
 
     call _output
 
@@ -28,20 +39,29 @@ _main:
     int_21h
 
     _input:
-        mov edx, S
+        push ebp
+        mov ebp, esp
+        mov edx, [ebp+8]
         push edx
         mov edx, fmt
         push edx
 
         call _scanf
         add esp, 8
+        mov eax, [ebp+8]
+        pop ebp
     ret
 
     _output:
-        mov edx, [x + 4]
+        push ebx
+        push ebp
+        mov ebp, esp
+        mov ebx, [ebp+12]
+
+        mov edx, [ebx + 4]
         push edx
 
-        mov edx, [x]
+        mov edx, [ebx]
         push edx
 
         mov edx, fmt
@@ -49,23 +69,34 @@ _main:
 
         call _printf
         add esp, 12
+        pop ebp
+        pop ebx
     ret
 
     heron:
+        pop ecx
+        pop eax
+        pop edx
+        push ecx
+        push ebx
+
         mov ecx, 10
 
         .loop1:
             fninit
             fld qword [half]
-            fld qword [S]
-            fld qword [x]
+            mov ebx, edx
+            fld qword [ebx]
+            mov ebx, eax
+            fld qword [ebx]
             
             fdiv
-            fld qword [x]
+            fld qword [ebx]
 
             fadd
             fmul
-            fst qword [x]
+            fst qword [ebx]
 
             loop .loop1
+        pop ebx
     ret
