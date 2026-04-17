@@ -8,12 +8,16 @@ extern _printf
 
 section .data
     input_text db 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', 0
-    shift db 2
-
-    fmt db '%s', 0
+    padding db 0, 0, 0, 0, 0, 0, 0, 0
+    
+    shift db 2 
+    fmt db "%s"
 
 section .text
 _main:
+
+    sub esp, 8
+    add esp, 8
     
     call _encode
 
@@ -26,17 +30,50 @@ _main:
 
 _encode:
     ; ceasar cipher with shift of 2 using mmx registers
+    ; create a full mmx register with the shift value (2) repeated in each byte
+    movq mm1, [shift]
+    punpcklbw mm1, mm1
+    punpcklwd mm1, mm1
+    punpcklwd mm1, mm1
+    punpcklwd mm1, mm1
 
     ; load input text into mmx register 8 bytes at a time
-
     ; add 2 to each byte, wrapping to the beginning of the alphabet if necessary
-
     ; store the result back to memory
 
+    xor esi, esi
+    movq mm2, [padding] ; Load padding into mm2 to handle the last few bytes of input_text
+    .loop1:
+        movq mm0, [input_text + esi]
+
+        
+
+        paddb mm0, mm7
+
+        movq [input_text + esi], mm0
+
+        add esi, 8
+        cmp esi, 445
+        jb .loop1
+ret
 _print:
+    pop eax
+    ; push encoded text onto the stack 4 bytes at at time
+    xor esi, esi
+    mov esi, 444
+    xor edx, edx
+    push edx
 
-    ; push encoded text onto the stack 4 bytes at at time 
+    .loop2:
+        push [input_text + esi]
 
-    ; push format string onto the stack
+        sub esi, 4
+        cmp esi, 0
+        ja .loop2
+    
+    push fmt
+    
+    call _printf
 
-    ; call printf to print the encoded text
+    push eax
+ret
