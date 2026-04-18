@@ -7,6 +7,17 @@ extern _printf
 extern _exit
 
 
+; Andrew Ryan McLinden
+; CSCI 361 Spring 2026
+; Assignment class 31
+; I acknowledge that I have worked on this assignment independently,
+; except where explicitly noted and referenced. Any collaboration or
+; use of external resources has been properly cited.
+; I am fully aware of the consequences of academic dishonesty and
+; agree to abide by the university's academic integrity policy.
+
+
+
 section .data
     input_text db 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', 0
     padding db 0, 0, 0, 0, 0, 0, 0, 0
