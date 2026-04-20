@@ -16,11 +16,33 @@ extern _exit
 ; agree to abide by the university's academic integrity policy.
 
 section .data
+vector_a dd 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0
+vector_b dd 1.0, 1.0, 1.0, 1.0, 2.0, 2.0, 2.0, 2.0, 3.0, 3.0, 3.0, 3.0
+result dq 0.0
+padding db 0, 0, 0, 0, 0, 0, 0, 0
+fmt db "%lf",10,13,0
 
+;expected output 1*1+2*1+3*1+4*1+5*2+6*2+7*2+8*2+9*3+10*3+11*3+12*3= 10+52+126 = 188.000000
 
 section .text
 _main:
+
+    call cross_product
+    
+    mov ebx, result
+    mov edx, [ebx + 4]
+    push edx
+    mov edx, [ebx]
+    push edx
+    push fmt
+
+    call _printf
     
     ; Exit program with return code 0 (AH=00h)
     push 0
     call _exit
+
+cross_product:
+    movups xmm0, [vector_a]
+    movups xmm1, [vector_b]
+ret
