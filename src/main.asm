@@ -29,6 +29,7 @@ section .data
     _up db 122, 122, 122, 122, 122, 122, 122, 122
     _lowc db 64, 64, 64, 64, 64, 64, 64, 64
     _upc db 90, 90, 90, 90, 90, 90, 90, 90
+    _alpha db 26, 26, 26, 26, 26, 26, 26, 26
 
 section .text
 _main:
@@ -57,12 +58,6 @@ _encode:
 
     ; ceasar cipher with shift of 2 using mmx registers
     ; create a full mmx register with the shift value (2) repeated in each byte
-    movq mm1, [shift]
-    punpcklbw mm1, mm1
-    punpcklwd mm1, mm1
-    punpcklwd mm1, mm1
-    punpcklwd mm1, mm1
-
     ; mask of spaces to prevent them from being changed
 
     push esi
@@ -71,6 +66,12 @@ _encode:
         ; declaration
         movq mm0, [ebx + esi]
         pcmpeqb mm4, mm4
+
+        movq mm1, [shift]
+        punpcklbw mm1, mm1
+        punpcklwd mm1, mm1
+        punpcklwd mm1, mm1
+        punpcklwd mm1, mm1
 
         ; check lower bound for uppercase
         movq mm2, [_lowc]
@@ -103,6 +104,32 @@ _encode:
         por mm5, mm6
 
         paddb mm0, mm5
+
+        movq mm1, [_alpha]
+
+        ; check upper bound for uppercase again to check for overflow
+        movq mm2, [_upc]
+        movq mm3, mm0
+        pcmpgtb mm3, mm2
+        movq mm5, mm1
+        pand mm5, mm3
+
+        movq mm2, [_low]
+        movq mm3, mm0
+        pcmpgtb mm3, mm2
+        pxor mm3, mm4
+        pand mm5, mm3
+
+        ; check upper bound for lowercase again to check for overflow
+        movq mm2, [_up]
+        movq mm3, mm0
+        pcmpgtb mm3, mm2
+        movq mm6, mm1
+        pand mm6, mm3
+
+        por mm5, mm6
+
+        psubb mm0, mm5
          
         movq [ebx + esi], mm0
 
