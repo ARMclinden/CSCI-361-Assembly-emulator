@@ -43,6 +43,20 @@ _main:
     call _exit
 
 cross_product:
-    movups xmm0, [vector_a]
-    movups xmm1, [vector_b]
+    
+    xor ecx, ecx
+
+    .loop1:
+        movups xmm0, [vector_a + ecx]
+        movups xmm1, [vector_b + ecx]
+
+        mulps xmm1, xmm0
+
+        movhlps xmm2, xmm1
+        movlhps xmm3, xmm1
+
+        cvtps2pd xmm2, xmm2
+        shufps xmm3, xmm3, 5
+        cvtps2pd xmm3, xmm3
+
 ret
