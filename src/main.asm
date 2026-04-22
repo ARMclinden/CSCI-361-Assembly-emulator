@@ -28,12 +28,11 @@ section .text
 _main:
 
     call cross_product
+
+    movsd [result], xmm0
     
-    mov ebx, result
-    mov edx, [ebx + 4]
-    push edx
-    mov edx, [ebx]
-    push edx
+    push dword [result + 4]
+    push dword [result]
     push fmt
 
     call _printf
@@ -55,8 +54,30 @@ cross_product:
         movhlps xmm2, xmm1
         movlhps xmm3, xmm1
 
+
         cvtps2pd xmm2, xmm2
-        shufps xmm3, xmm3, 5
+        shufps xmm3, xmm3, 01001110b
         cvtps2pd xmm3, xmm3
 
+        addpd xmm3, xmm2
+
+        movhlps xmm4, xmm3
+        movlhps xmm5, xmm3
+
+        shufpd xmm4, xmm4, 01b
+
+        addpd xmm4, xmm5
+
+        addpd xmm6, xmm4
+
+        xorps xmm4, xmm4
+        xorps xmm5, xmm5
+
+        add ecx, 16
+        cmp ecx, 48
+        jbe .loop1
+
+    movups xmm0, xmm6
+    shufpd xmm0, xmm0, 11b
+    
 ret
